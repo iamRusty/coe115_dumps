@@ -1,5 +1,5 @@
 ; ******************************************************************************
-; LCD.s - Interface an LCD with PIC24F Microchip
+; LCD.s - Interface an LCD with PIC24F Microchip (4-bit mode)
 ; 
 ; MIT License
 ;
