@@ -177,7 +177,7 @@ send4ToLCD:
     nop
     BSET    PORTB, #14	    ; Set Enable
     nop
-    BCLR    PORTB, #13	    ; Clear Enable
+    BCLR    PORTB, #14	    ; Clear Enable
     return
 
 ; Send 8-bit Instruction
