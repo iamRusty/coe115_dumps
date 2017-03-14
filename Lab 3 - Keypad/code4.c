@@ -1,8 +1,9 @@
 /*
- * File:   main.c
- * Author: Snap
+ * File:   ------
+ * Author: Rusty
  *
  * Created on February 20, 2017, 8:22 PM
+ * Based off Sir Snap's original codes
  */
 
 
