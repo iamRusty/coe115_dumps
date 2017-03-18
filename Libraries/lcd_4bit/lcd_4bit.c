@@ -32,7 +32,7 @@ _CONFIG3 (SOSCSEL_IO)
         
 void send4ToLCD(int instruction_4);
 void send8ToLCD(int instruction_8);
-void send8ToLCD_data(int data_8);
+void send8ToLCDData(int data_8);
 void delay(int delay_constant);
 void LCDInit(void);
 void writeString(char* word);
@@ -51,7 +51,7 @@ void writeString(char* string){
     // The first 128 characters in supported LCD characters
     // are based on ASCII Table
     while(count < __string_length__){
-        send8ToLCD_data(string[count]);
+        send8ToLCDData(string[count]);
         count++;
     }
     
@@ -137,7 +137,7 @@ void send8ToLCD(int instruction_8){
     return;
 }
 
-void send8ToLCD_data(int instruction_8){
+void send8ToLCDData(int instruction_8){
     int ls_data = instruction_8 & 0x000F;
     ls_data = ls_data << 8;
     ls_data = ls_data | 0x2000;
