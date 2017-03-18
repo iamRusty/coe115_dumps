@@ -18,17 +18,34 @@ int main(void) {
 
     TRISB = 0x0001;
     AD1PCFG = 0xFFFF;
-    LCDInit();
+    lcdInit();
     
-    //send8ToLCD_data(0x52);
-    writeString("hello");
-    cursorPos(0xC0);
-    sprintf(__string_buffer_, "%i", 89);
-    writeString(__string_buffer_);
+    send8ToLCD(0x000C); //noBlink() and noCursor() - I'll implement this later 
+    lcdPrint("LCD Test");
+    setCursor(0xC0);
+    lcdPrint("Number Test: ");
+    sprintf(__string_buffer_, "%i", 115);
     delay(5000);
+    lcdPrint(__string_buffer_);
+    delay(2000);
     clearDisplay();
-    delay(10000);
-    writeString("Hello World");
+    lcdPrint("Loading");
+    setCursor(0xC0);
+    int count;
+    count = 0;
+    while (count < 16){
+        lcdWrite(0xFFFF);
+        delay(1000);
+        count++;
+    }
+    clearDisplay();
+    lcdPrint("Loading Complete");
+    delay(2500);
+    clearDisplay();
+    
+    lcdPrint("  Hello World");
+    setCursor(0xC0);
+    lcdPrint("  I <3 CoE115");
     while(1){
     }
     

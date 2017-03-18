@@ -34,14 +34,13 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.
 
-
 void send4ToLCD(int instruction_4);
 void send8ToLCD(int instruction_8);
-void send8ToLCD_data(int data_8);
+void lcdWrite(int data_8);
 void delay(int delay_constant);
-void LCDInit(void);
-void writeString(char* string);
-void cursorPos(int DDRAM_address);
+void lcdInit(void);
+void lcdPrint(char* word);
+void setCursor(int DDRAM_address);
 void clearDisplay(void);
 void clearLine1(void);
 void clearLine2(void);

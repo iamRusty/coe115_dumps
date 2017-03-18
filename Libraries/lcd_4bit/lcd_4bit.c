@@ -29,20 +29,21 @@ _CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL)// & PLL96MHZ
 _CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL & PLL96MHZ_OFF & PLLDIV_NODIV)
 _CONFIG3 (SOSCSEL_IO)
  */        
+
         
 void send4ToLCD(int instruction_4);
 void send8ToLCD(int instruction_8);
-void send8ToLCDData(int data_8);
+void lcdWrite(int data_8);
 void delay(int delay_constant);
-void LCDInit(void);
-void writeString(char* word);
-void cursorPos(int DDRAM_address);
+void lcdInit(void);
+void lcdPrint(char* word);
+void setCursor(int DDRAM_address);
 void clearDisplay(void);
 void clearLine1(void);
 void clearLine2(void);
 
 // Only supports alpha-numeric
-void writeString(char* string){
+void lcdPrint(char* string){
     int __string_length__;
     __string_length__ = strlen(string);
     int count;
@@ -51,14 +52,14 @@ void writeString(char* string){
     // The first 128 characters in supported LCD characters
     // are based on ASCII Table
     while(count < __string_length__){
-        send8ToLCDData(string[count]);
+        lcdWrite(string[count]);
         count++;
     }
     
     return;
 }
 
-void LCDInit(void){    
+void lcdInit(void){    
     // No data should be displayed to or from the display for 15ms
     delay(15);
     
@@ -137,7 +138,7 @@ void send8ToLCD(int instruction_8){
     return;
 }
 
-void send8ToLCDData(int instruction_8){
+void lcdWrite(int instruction_8){
     int ls_data = instruction_8 & 0x000F;
     ls_data = ls_data << 8;
     ls_data = ls_data | 0x2000;
@@ -158,7 +159,7 @@ void send8ToLCDData(int instruction_8){
     Nop();
     PORTB = PORTB & 0x0F00;
     Nop();
-    delay(1);
+    __delay_us(100);
     return;
 }
 
@@ -167,7 +168,7 @@ void delay(int delay_constant){
     return;
 }
 
-void cursorPos(int DDRAM_address){
+void setCursor(int DDRAM_address){
     send8ToLCD(DDRAM_address);
     delay(1);
 }
@@ -175,14 +176,14 @@ void cursorPos(int DDRAM_address){
 void clearDisplay(){
     clearLine1();
     clearLine2();
-    cursorPos(0x80);
+    setCursor(0x80);
 }
 void clearLine1(void){
-    cursorPos(0x80);
-    writeString("                ");
+    setCursor(0x80);
+    lcdPrint("                ");
 }
 
 void clearLine2(void){
-    cursorPos(0xC0);
-    writeString("                ");
+    setCursor(0xC0);
+    lcdPrint("                ");
 }
