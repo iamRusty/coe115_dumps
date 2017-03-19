@@ -20,7 +20,8 @@ int main(void) {
     AD1PCFG = 0xFFFF;
     lcdInit();
     
-    send8ToLCD(0x000C); //noBlink() and noCursor() - I'll implement this later 
+    send8ToLCD(0x000C); //noBlink() and noCursor() - I'll implement this later
+    delay(1);
     lcdPrint("LCD Test");
     setCursor(0xC0);
     lcdPrint("Number Test: ");

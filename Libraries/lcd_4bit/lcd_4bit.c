@@ -13,15 +13,18 @@
 // This will optimally work in 4MHz environment
 #define FCY 4000000UL
 #include "xc.h"
-#include <stdlib.h>
-#include <libpic30.h>
+#include "stdlib.h"
+#include "libpic30.h"
 #include "lcd_4bit.h"
-#include <string.h>
+#include "string.h"
+#include <stdio.h>
 
+static int blink_value;
+static int cursor_value;
 
 //PIC24GA002
-_CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
-_CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL)// & PLL96MHZ_OFF & PLLDIV_NODIV)
+//_CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
+//_CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL)// & PLL96MHZ_OFF & PLLDIV_NODIV)
 //_CONFIG3 (SOSCSEL_IO)
 
 /*
@@ -37,10 +40,13 @@ void lcdWrite(int data_8);
 void delay(int delay_constant);
 void lcdInit(void);
 void lcdPrint(char* word);
+void lcdIntPrint(int value);
 void setCursor(int DDRAM_address);
 void clearDisplay(void);
 void clearLine1(void);
 void clearLine2(void);
+void noBlink(void);
+void noCursor(void);
 
 // Only supports alpha-numeric
 void lcdPrint(char* string){
@@ -59,7 +65,14 @@ void lcdPrint(char* string){
     return;
 }
 
-void lcdInit(void){    
+void lcdIntPrint(int value){
+    char __string_buffer__[16];
+    sprintf(__string_buffer__, "%i", value);
+    lcdPrint(__string_buffer__);
+    return;
+}
+
+void lcdInit(void){
     // No data should be displayed to or from the display for 15ms
     delay(15);
     
@@ -102,6 +115,10 @@ void lcdInit(void){
     //  Set B for Blink     (1)
     send8ToLCD(0x000F);
     delay(15);
+    
+    // Initialize default values of blink and cursor
+    blink_value = 1;
+    cursor_value = 1;
 }
 
 void send4ToLCD(int instruction_4){
@@ -181,9 +198,25 @@ void clearDisplay(){
 void clearLine1(void){
     setCursor(0x80);
     lcdPrint("                ");
+    setCursor(0x80);
 }
 
 void clearLine2(void){
     setCursor(0xC0);
     lcdPrint("                ");
+    setCursor(0xC0);
+}
+
+void noBlink(void){
+    if (cursor_value)
+        send8ToLCD(0x0E);
+    else
+        send8ToLCD(0x0C);
+}
+
+void noCursor(void){
+    if (cursor_value)
+        send8ToLCD(0x0D);
+    else
+        send8ToLCD(0x0C);
 }
