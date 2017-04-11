@@ -20,18 +20,18 @@ int main(void) {
     AD1PCFG = 0xFFFF;
     lcdInit();
     
-    send8ToLCD(0x000C); //noBlink() and noCursor() - I'll implement this later
-    delay(1);
+    noBlink();
+    noCursor();
     lcdPrint("LCD Test");
     setCursor(0xC0);
     lcdPrint("Number Test: ");
-    sprintf(__string_buffer_, "%i", 115);
     delay(5000);
-    lcdPrint(__string_buffer_);
+    lcdIntPrint(115);
     delay(2000);
     clearDisplay();
     lcdPrint("Loading");
     setCursor(0xC0);
+
     int count;
     count = 0;
     while (count < 16){
@@ -39,6 +39,7 @@ int main(void) {
         delay(1000);
         count++;
     }
+    
     clearDisplay();
     lcdPrint("Loading Complete");
     delay(2500);

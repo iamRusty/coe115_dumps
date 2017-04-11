@@ -1,60 +1,65 @@
 /*
- * File:   ------
+ * File:   lcd_4bit.c
  * Author: Rusty
  *
- * Created on March 14, 2017, 1:23 PM
+ * Created on March 18, 2017, 2:23 PM
  */
 
 /*
  *    Note: The Nop()s are important for timing
  */
 
-#define FCY 2000000UL
-#include "xc.h"
-#include <stdlib.h>
-#include <libpic30.h>
 
-_CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
-_CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL)// & PLL96MHZ_OFF & PLLDIV_NODIV)
+// This will optimally work in 4MHz environment
+#define FCY 4000000UL
+#include "xc.h"
+#include "stdlib.h"
+#include "libpic30.h"
+#include "lcd_4bit.h"
+#include "string.h"
+
+
+//PIC24GA002
+//_CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
+//_CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL)// & PLL96MHZ_OFF & PLLDIV_NODIV)
 //_CONFIG3 (SOSCSEL_IO)
 
+/*
+ _CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
+_CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL & PLL96MHZ_OFF & PLLDIV_NODIV)
+_CONFIG3 (SOSCSEL_IO)
+ */        
+
+        
 void send4ToLCD(int instruction_4);
 void send8ToLCD(int instruction_8);
-void send8ToLCD_data(int data_8);
+void lcdWrite(int data_8);
 void delay(int delay_constant);
-void LCDInit(void);
+void lcdInit(void);
+void lcdPrint(char* word);
+void setCursor(int DDRAM_address);
+void clearDisplay(void);
+void clearLine1(void);
+void clearLine2(void);
 
-int main(void) {
+// Only supports alpha-numeric
+void lcdPrint(char* string){
+    int __string_length__;
+    __string_length__ = strlen(string);
+    int count;
+    count = 0;
     
-    // GPIO Initialization
-    TRISB = 0x0001;
-    AD1PCFG = 0xFFFF;
-    
-    LCDInit();
-    
-    send8ToLCD_data(0x52);
-    delay(1);
-    
-    send8ToLCD_data(0x75);
-    delay(1);
-    
-    send8ToLCD_data(0x73);
-    delay(1);
-
-    send8ToLCD_data(0x74);
-    delay(1);
-
-    send8ToLCD_data(0x79);
-    delay(1);    
-    
-    while(1){
-    
+    // The first 128 characters in supported LCD characters
+    // are based on ASCII Table
+    while(count < __string_length__){
+        lcdWrite(string[count]);
+        count++;
     }
     
-    return 0;
+    return;
 }
 
-void LCDInit(void){    
+void lcdInit(void){    
     // No data should be displayed to or from the display for 15ms
     delay(15);
     
@@ -128,11 +133,12 @@ void send8ToLCD(int instruction_8){
     PORTB = PORTB | 0x4000;
     Nop();
     PORTB = PORTB & 0x0F00;
-    Nop();  
+    Nop();
+    //delay(1)
     return;
 }
 
-void send8ToLCD_data(int instruction_8){
+void lcdWrite(int instruction_8){
     int ls_data = instruction_8 & 0x000F;
     ls_data = ls_data << 8;
     ls_data = ls_data | 0x2000;
@@ -152,7 +158,8 @@ void send8ToLCD_data(int instruction_8){
     PORTB = PORTB | 0x4000;
     Nop();
     PORTB = PORTB & 0x0F00;
-    Nop(); 
+    Nop();
+    __delay_us(100);
     return;
 }
 
@@ -161,4 +168,22 @@ void delay(int delay_constant){
     return;
 }
 
+void setCursor(int DDRAM_address){
+    send8ToLCD(DDRAM_address);
+    delay(1);
+}
 
+void clearDisplay(){
+    clearLine1();
+    clearLine2();
+    setCursor(0x80);
+}
+void clearLine1(void){
+    setCursor(0x80);
+    lcdPrint("                ");
+}
+
+void clearLine2(void){
+    setCursor(0xC0);
+    lcdPrint("                ");
+}
