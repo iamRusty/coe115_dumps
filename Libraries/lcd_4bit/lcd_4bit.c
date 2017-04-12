@@ -10,8 +10,9 @@
  */
 
 
-// This will optimally work in 4MHz environment
-#define FCY 4000000UL
+
+#define FCY 4000000UL                   // This will optimally work in 4MHz environment
+#define DECIMAL_POINT_PRECISION 3       // Default 3 decimal points to print
 #include "xc.h"
 #include "stdlib.h"
 #include "libpic30.h"
@@ -41,6 +42,7 @@ void delay(int delay_constant);
 void lcdInit(void);
 void lcdPrint(char* word);
 void lcdIntPrint(int value);
+void lcdFloatPrint(float float_number);
 void setCursor(int DDRAM_address);
 void clearDisplay(void);
 void clearLine1(void);
@@ -69,6 +71,20 @@ void lcdIntPrint(int value){
     char __string_buffer__[16];
     sprintf(__string_buffer__, "%i", value);
     lcdPrint(__string_buffer__);
+    return;
+}
+
+void lcdFloatPrint(float float_number){
+    int abscissa = (int) float_number;
+    float decimal_part;
+    decimal_part = float_number - abscissa;
+    int count = 0;
+    while (count < DECIMAL_POINT_PRECISION){
+        decimal_part = decimal_part * 10;
+    }
+    lcdIntPrint(abscissa);
+    lcdPrint(".");
+    lcdIntPrint((int) decimal_part); 
     return;
 }
 
