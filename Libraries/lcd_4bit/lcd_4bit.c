@@ -81,6 +81,7 @@ void lcdFloatPrint(float float_number){
     int count = 0;
     while (count < DECIMAL_POINT_PRECISION){
         decimal_part = decimal_part * 10;
+        count++;
     }
     lcdIntPrint(abscissa);
     lcdPrint(".");
