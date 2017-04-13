@@ -203,7 +203,7 @@ void delay(int delay_constant){
     int count, count2;
     
     for (count2 = 0; count2 < delay_constant; count2++){
-        for (count = 0; count < final; count++){
+        for (count = 0; count < DELAY_ITERATION; count++){
         Nop();
         Nop();
         }
