@@ -39,9 +39,6 @@
 bin
 MP2
 
-# Documents
-*.pdf
-
 #Compressed Files
 *.zip
 
