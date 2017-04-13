@@ -1,16 +1,15 @@
 /*
- * File:   lcd_4bit.c
- * Author: Rusty
- *
- * Created on March 18, 2017, 2:23 PM
- */
-
-/*
  *    Note: The Nop()s are important for timing
  */
 
+/*
+    D4 - RB0
+    D5 - RB1
+    D6 - RB2
+    D7 - RB3
+*/
 
-
+// This will optimally work in 4MHz environment
 #define FCY 4000000UL                   // This will optimally work in 4MHz environment
 #define DECIMAL_POINT_PRECISION 3       // Default 3 decimal points to print
 #define DELAY_ITERATION 498             // Default delay iteration for 4MHz environment 
@@ -33,7 +32,9 @@ static int cursor_value;
  _CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
 _CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL & PLL96MHZ_OFF & PLLDIV_NODIV)
 _CONFIG3 (SOSCSEL_IO)
- */        
+    */
+
+
 
         
 void send4ToLCD(int instruction_4);
@@ -80,7 +81,7 @@ void lcdFloatPrint(float float_number){
     float decimal_part;
     decimal_part = float_number - abscissa;
     int count = 0;
-    while (count < DECIMAL_POINT_PRECISION){
+    while (count < 1 * DECIMAL_POINT_PRECISION){
         decimal_part = decimal_part * 10;
         count++;
     }
@@ -140,34 +141,34 @@ void lcdInit(void){
 }
 
 void send4ToLCD(int instruction_4){
-    instruction_4 = instruction_4 << 8;
+    //instruction_4 = instruction_4 << 8;
     PORTB = instruction_4;
     Nop();
     PORTB = PORTB | 0x4000;
     Nop();
-    PORTB = PORTB & 0x0F00;
+    PORTB = PORTB & 0x000F;
     Nop();
     return;
 }
 
 void send8ToLCD(int instruction_8){
     int ls_data = instruction_8 & 0x000F;
-    ls_data = ls_data << 8;
+    //ls_data = ls_data << 8;
     int ms_data = instruction_8 & 0x00F0;
-    ms_data = ms_data << 4;
+    ms_data = ms_data >> 4;
     
     PORTB = ms_data;
     Nop();
     PORTB = PORTB | 0x4000;
     Nop();
-    PORTB = PORTB & 0x0F00;
+    PORTB = PORTB & 0x000F;
     Nop();
 
     PORTB = ls_data;
     Nop();
     PORTB = PORTB | 0x4000;
     Nop();
-    PORTB = PORTB & 0x0F00;
+    PORTB = PORTB & 0x000F;
     Nop();
     //delay(1)
     return;
@@ -175,24 +176,24 @@ void send8ToLCD(int instruction_8){
 
 void lcdWrite(int instruction_8){
     int ls_data = instruction_8 & 0x000F;
-    ls_data = ls_data << 8;
+    //ls_data = ls_data << 8;
     ls_data = ls_data | 0x2000;
     int ms_data = instruction_8 & 0x00F0;
-    ms_data = ms_data << 4;
+    ms_data = ms_data >> 4;
     ms_data = ms_data | 0x2000;
     
     PORTB = ms_data;
     Nop();
     PORTB = PORTB | 0x4000;
     Nop();
-    PORTB = PORTB & 0x0F00;
+    PORTB = PORTB & 0x000F;
     Nop();
 
     PORTB = ls_data;
     Nop();
     PORTB = PORTB | 0x4000;
     Nop();
-    PORTB = PORTB & 0x0F00;
+    PORTB = PORTB & 0x000F;
     Nop();
     __delay_us(100);
     return;
@@ -209,8 +210,8 @@ void delay(int delay_constant){
         }
     }
     return;
-}
 
+}
 
 void setCursor(int DDRAM_address){
     send8ToLCD(DDRAM_address);

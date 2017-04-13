@@ -1,15 +1,12 @@
 /*
- * File:   lcd_4bit.c
- * Author: Rusty
- *
- * Created on March 18, 2017, 2:23 PM
- */
-
-/*
  *    Note: The Nop()s are important for timing
  */
-
-
+/*
+    D4 - RB8
+    D5 - RB9
+    D6 - RB10
+    D7 - RB11
+*/
 
 #define FCY 4000000UL                   // This will optimally work in 4MHz environment
 #define DECIMAL_POINT_PRECISION 3       // Default 3 decimal points to print
