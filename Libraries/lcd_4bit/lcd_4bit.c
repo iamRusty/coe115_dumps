@@ -13,6 +13,7 @@
 
 #define FCY 4000000UL                   // This will optimally work in 4MHz environment
 #define DECIMAL_POINT_PRECISION 3       // Default 3 decimal points to print
+#define DELAY_ITERATION 498             // Default delay iteration for 4MHz environment 
 #include "xc.h"
 #include "stdlib.h"
 #include "libpic30.h"
@@ -198,9 +199,18 @@ void lcdWrite(int instruction_8){
 }
 
 void delay(int delay_constant){
-    __delay_ms(delay_constant);
+    //__delay_ms(delay_constant);
+    int count, count2;
+    
+    for (count2 = 0; count2 < delay_constant; count2++){
+        for (count = 0; count < final; count++){
+        Nop();
+        Nop();
+        }
+    }
     return;
 }
+
 
 void setCursor(int DDRAM_address){
     send8ToLCD(DDRAM_address);
