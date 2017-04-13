@@ -87,13 +87,13 @@ int main(void) {
     // receive data
     char lcdString[8];
     _count_char_ = 0;
-    while (_count_char_ < 8){
+    while (_count_char_ < 7){
         lcdString[_count_char_] = i2c_rx();
-        _count_char_++;
 
         // send ACK, but not on last byte
-        if (_count_char_ < 7)
+        if (_count_char_ < 6)
         send_ack();
+        _count_char_++;
     }
     lcdString[_count_char_ - 1] = 0;
     
