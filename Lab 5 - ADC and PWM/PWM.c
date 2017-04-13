@@ -7,9 +7,15 @@
 
 
 #include "xc.h"
+// PIC24FJ64GA002
+//_CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
+//_CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL)
+
+// PIC24FJ64GB002
 _CONFIG1 (FWDTEN_OFF & JTAGEN_OFF)
 _CONFIG2 (POSCMOD_NONE & OSCIOFNC_ON & FCKSM_CSDCMD & FNOSC_FRCPLL & PLL96MHZ_OFF & PLLDIV_NODIV)
 _CONFIG3 (SOSCSEL_IO)
+
 
 int main(void)  
   TRISB = 0;
@@ -28,7 +34,8 @@ int main(void)
   __builtin_write_OSCCONL(OSCCON|(1<<6));
   
 
-    while(1){    
-    }
+  while(1){    
+  
+  }
     return 0;
 }
